@@ -10,6 +10,16 @@ public class PlayerMovement : MonoBehaviour
     public VariableJoystick lJoy;
     public float moveForce;
 
+
+    //shooting
+    public GameObject bulletPoint, bullet;
+    public float shootCD = 0;
+    public AudioSource fire;
+    public float xLook, yLook;
+    //altshooting
+    internal bool trishot = false;
+    private float triAngle = 10f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,14 +30,14 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-        float xLook = lJoy.Horizontal;
-        float yLook = lJoy.Vertical;
+        xLook = lJoy.Horizontal;
+        yLook = lJoy.Vertical;
         Vector3 lookPos = new Vector3(xLook, yLook);
         //Vector3 currPos = new Vector3(transform.position.x, transform.position.y); 
         //transform.LookAt(transform.position + lookPos); BAD this is awful.
         if (xLook != 0 &&  yLook != 0)
         {
-            transform.right = lookPos;
+            transform.up = lookPos;
         }
 
 
@@ -38,7 +48,41 @@ public class PlayerMovement : MonoBehaviour
         //rb.AddForce(moveVector);
         //I'll figure out a better way for moving later. It's kinda rigid at the moment. ha. rigid.
         rb.velocity = moveVector * moveForce;
+
+
+        //shoot bullets always
+        Shoot();
     }
 
+    public void Shoot()
+    {
+        shootCD += Time.deltaTime;
+        if (shootCD > 0.5f && xLook != 0 && yLook != 0)
+        {
+            Instantiate(bullet, bulletPoint.transform.position, bulletPoint.transform.rotation);
+            shootCD = 0;
+            fire.Play();
+            
+            
+            
+            //trishot
+            if (trishot == true)
+            {
+                
+                float angle = bulletPoint.transform.rotation.eulerAngles.z;
+                float leftAngle = angle + triAngle;
+                float rightAngle = angle - triAngle;
 
+                //shoot the left side
+                Quaternion leftRotation = Quaternion.Euler(0f, 0f, leftAngle);
+                Instantiate(bullet, bulletPoint.transform.position, leftRotation);
+
+                //shoot the right side
+                Quaternion rightRotation = Quaternion.Euler(0f, 0f, rightAngle);
+                Instantiate(bullet, bulletPoint.transform.position, rightRotation);
+
+            }
+        }
+        
+    }
 }

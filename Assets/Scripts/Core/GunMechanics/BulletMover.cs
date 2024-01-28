@@ -9,6 +9,9 @@ public class BulletMover : MonoBehaviour
     public float MaxLifeTime; // Time to wait until bullet is destroyed
     AudioSource HitSoundEffect;
     private float currentTime;
+    public Rigidbody2D rb;
+
+    public GameObject scrapToSpawn;
     
     private void Awake()
     {
@@ -19,7 +22,8 @@ public class BulletMover : MonoBehaviour
     private void Update()
     {
         currentTime += Time.deltaTime;
-        transform.position = transform.position + (Vector3.up * Speed) * Time.deltaTime; // Moves the bullet upward at a given speed
+        //transform.position = transform.position + (Vector3.up * Speed) * Time.deltaTime; // Moves the bullet upward at a given speed
+        rb.velocity = transform.up * Speed;
 
         if (currentTime > MaxLifeTime) // Lifetime Condition
         {
@@ -31,15 +35,21 @@ public class BulletMover : MonoBehaviour
     {
         print(collision.gameObject.name);
 
-        if (HitSoundEffect)
-        {
-            HitSoundEffect.Play();
-        }
 
-        if (collision.gameObject.tag == "Enemy")
+
+        if (collision.gameObject.tag == "Enemy") //IMPORTANT FOR FUTURE: Make it so enemies have health, and shooting them removes health. They destroy themselves once they reach 0.
         {
+            //creates stuff where the enemy dies
+            Instantiate(scrapToSpawn, collision.gameObject.transform.position, Quaternion.identity);
+
+
             Destroy(collision.gameObject);
             Destroy(this.gameObject);
+            if (HitSoundEffect)
+            {
+                HitSoundEffect.Play();
+            }
+
         }
     }
 
