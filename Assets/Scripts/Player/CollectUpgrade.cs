@@ -6,8 +6,7 @@ public class CollectUpgrade : MonoBehaviour
 {
 
     public float upgradeProg;
-    public float scrapNeedToUpgrade;
-
+    public float scrapNeedToUpgrade, numUpgrade = 0;
 
     public PlayerMovement playerMovement;
 
@@ -49,9 +48,19 @@ public class CollectUpgrade : MonoBehaviour
 
     public void Upgrade()
     {
+        numUpgrade++;
         //impliment an actual upgrade system here
+        switch(numUpgrade)
+        {
+            case 1:
+                playerMovement.trishot = true;
+                break;
 
-        playerMovement.trishot = true;
+            case 2:
+                playerMovement.moveForce += 2;
+                break;
+        }
+        
 
     }
 }
