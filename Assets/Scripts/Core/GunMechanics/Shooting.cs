@@ -17,7 +17,7 @@ public class Shooting : MonoBehaviour
 
     private void Start()
     {
-        ShootButton = GameObject.Find("Shoot Button").GetComponent<Button>();
+       // ShootButton = GameObject.Find("Shoot Button").GetComponent<Button>();
     }
 
     private void Update()
@@ -26,7 +26,7 @@ public class Shooting : MonoBehaviour
         if (CurrentTime >= ShootCooldown)
         {
             CanShoot = true;
-            DisableShootButton(false);
+            //DisableShootButton(false);
         }
     }
 
@@ -34,7 +34,7 @@ public class Shooting : MonoBehaviour
     {
         if (CanShoot == true)
         {
-            DisableShootButton(true);
+            //DisableShootButton(true);
             CanShoot = false;
             CurrentTime = 0;
 
@@ -46,7 +46,8 @@ public class Shooting : MonoBehaviour
         }
     }
 
-
+    /*
+     
     private void DisableShootButton(bool Status)
     {
         if (Status == true)
@@ -60,5 +61,6 @@ public class Shooting : MonoBehaviour
             ShootButton.enabled = true;
         }
     }
+    */
 }
-   
+
