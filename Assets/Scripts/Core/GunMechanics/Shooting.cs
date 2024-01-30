@@ -57,7 +57,11 @@ public class Shooting : MonoBehaviour
             }
         } else
         {
-            ShootButton.enabled = true;
+            if (ShootButton != null)
+            {
+                ShootButton.enabled = true;
+            }
+                
         }
     }
 }
