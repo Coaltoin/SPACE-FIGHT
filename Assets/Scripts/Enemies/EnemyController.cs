@@ -8,6 +8,7 @@ public class EnemyController : MonoBehaviour
 
     public float moveSpeed = 2f;
     private Transform player;
+    public AudioSource deathsound;
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -21,5 +22,20 @@ public class EnemyController : MonoBehaviour
         Vector2 direction = player.position - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            Debug.Log("Player has been hit by Enemy Ship!");
+
+            // Call function here to damage player health or something
+            if (deathsound)
+            {
+                deathsound.Play();
+            }
+            Destroy(this.gameObject);
+        }
     }
 }

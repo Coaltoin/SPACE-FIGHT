@@ -24,7 +24,7 @@ public class CollectUpgrade : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject);
+       // Debug.Log(collision.gameObject);
         if (collision.gameObject.tag == "Scrap")
         {
             upgradeProg += 1;

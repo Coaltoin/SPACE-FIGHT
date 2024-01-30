@@ -63,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
             shootCD = 0;
             fire.Play();
             
-            
+           
             
             //trishot
             if (trishot == true)
