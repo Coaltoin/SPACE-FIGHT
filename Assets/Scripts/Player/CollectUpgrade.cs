@@ -1,25 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CollectUpgrade : MonoBehaviour
 {
 
-    public float upgradeProg;
+    public float upgradeProg, uiSpacing = 250f, score = 0;
     public float scrapNeedToUpgrade, numUpgrade = 0;
 
+
+
     public PlayerMovement playerMovement;
+    public GameObject canvas, uiBlocker, scoreHolder;
+
+    [Header("Upgrades")]
+    public List<GameObject> upgradeOptionsCom = new List<GameObject>();
+    public List<GameObject> revealedOptions = new List<GameObject>();
+    
 
     // Start is called before the first frame update
     void Start()
     {
+
         playerMovement = GetComponent<PlayerMovement>();
+        Object[] upgradeLoaded = Resources.LoadAll("Upgrades", typeof(GameObject));
+
+        foreach (GameObject prefab in upgradeLoaded)
+        {
+            upgradeOptionsCom.Add(prefab);
+        }
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+        //testing
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            Upgrade();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -27,6 +50,9 @@ public class CollectUpgrade : MonoBehaviour
        // Debug.Log(collision.gameObject);
         if (collision.gameObject.tag == "Scrap")
         {
+            score += 100;
+            scoreHolder.GetComponent<TMPro.TextMeshProUGUI>().text = "Score : " + score;
+            
             upgradeProg += 1;
             CheckUpgrade();
             Destroy(collision.gameObject);
@@ -49,7 +75,29 @@ public class CollectUpgrade : MonoBehaviour
     public void Upgrade()
     {
         numUpgrade++;
+        Time.timeScale = 0.0f;
+        uiBlocker.SetActive(true);
+
+        //Spawn em. 301.055y.
+        int upgrade1 = Random.Range(0, upgradeOptionsCom.Count);
+        int upgrade2 = Random.Range(0, upgradeOptionsCom.Count);
+        int upgrade3 = Random.Range(0, upgradeOptionsCom.Count);
+
+        GameObject option1 = upgradeOptionsCom[upgrade1];
+        GameObject option2 = upgradeOptionsCom[upgrade2];
+        GameObject option3 = upgradeOptionsCom[upgrade3];
+
+
+
+        SpawnUpgrades(option1, -1);
+        SpawnUpgrades(option2, 0);
+        SpawnUpgrades(option3, 1);
+
+
         //impliment an actual upgrade system here
+
+
+        /*
         switch(numUpgrade)
         {
             case 1:
@@ -60,7 +108,69 @@ public class CollectUpgrade : MonoBehaviour
                 playerMovement.moveForce += 2;
                 break;
         }
-        
+        */
 
     }
+
+    public void SpawnUpgrades(GameObject option, int space)
+    {
+        Vector3 spawnPosition = transform.position + Vector3.right * space * 550;
+        GameObject spawnedUI = Instantiate(option, spawnPosition, Quaternion.identity);
+        spawnedUI.transform.SetParent(canvas.transform, false);
+        Button button = spawnedUI.GetComponent<Button>();
+        revealedOptions.Add(spawnedUI);
+
+        switch (spawnedUI.name)
+        {
+            case "Full Thrust!(Clone)":
+                Debug.Log("Thrusting makes.");
+                break;
+            case "Speed(Clone)":
+                button.onClick.AddListener(Speed); 
+                break;
+            case "TriShot(Clone)":
+                button.onClick.AddListener(TriShotUpgrade);
+                break;
+            case "Firerate(Clone)":
+                button.onClick.AddListener(Firerate);
+                break;
+            
+        }    
+        button.onClick.AddListener(Resume);
+
+    }
+
+
+
+
+    public void Resume()
+    {
+        //Debug.Log("Clicka da button");
+        foreach (GameObject option in revealedOptions)
+        {
+            Destroy(option);
+        }
+        revealedOptions.Clear();
+        uiBlocker.SetActive(false);
+        Time.timeScale = 1f;
+    }
+    //UPGRADE FUNCTIONS
+    public void TriShotUpgrade()
+    {
+        //change this to set active a button that activates trishot.
+        Debug.Log("Activing TriShot");
+        playerMovement.trishot = true;
+
+    }
+    public void Speed()
+    {
+        playerMovement.moveAmp += .2f;
+
+    }
+
+    public void Firerate()
+    {
+        playerMovement.fireRate += .1f;
+    }
+
 }

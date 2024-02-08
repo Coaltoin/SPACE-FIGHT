@@ -8,12 +8,12 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     public VariableJoystick mJoy;
     public VariableJoystick lJoy;
-    public float moveForce;
+    public float moveForce, moveAmp = 1;
 
 
     //shooting
     public GameObject bulletPoint, bullet;
-    public float shootCD = 0;
+    public float shootCD = 0, fireRate = 1;
     public AudioSource fire;
     public float xLook, yLook;
     //altshooting
@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         Vector2 moveVector = new Vector2(xForce, yForce);
         //rb.AddForce(moveVector);
         //I'll figure out a better way for moving later. It's kinda rigid at the moment. ha. rigid.
-        rb.velocity = moveVector * moveForce;
+        rb.velocity = moveVector * moveForce * moveAmp;
 
 
         //shoot bullets always
@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Shoot()
     {
-        shootCD += Time.deltaTime;
+        shootCD += Time.deltaTime * fireRate;
         if (shootCD > 0.5f && xLook != 0 && yLook != 0)
         {
             Instantiate(bullet, bulletPoint.transform.position, bulletPoint.transform.rotation);
