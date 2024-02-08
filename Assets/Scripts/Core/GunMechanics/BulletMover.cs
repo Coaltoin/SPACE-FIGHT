@@ -13,8 +13,11 @@ public class BulletMover : MonoBehaviour
 
     public GameObject scrapToSpawn;
     
+    private GameManager gameManager;
+    
     private void Awake()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         HitSoundEffect = GameObject.Find("EnemyHit").GetComponent<AudioSource>();
         currentTime = 0;
     }
@@ -33,7 +36,7 @@ public class BulletMover : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        print(collision.gameObject.name);
+      //  print(collision.gameObject.name);
 
 
 
@@ -42,6 +45,10 @@ public class BulletMover : MonoBehaviour
             //creates stuff where the enemy dies
             Instantiate(scrapToSpawn, collision.gameObject.transform.position, Quaternion.identity);
 
+            if (gameManager)
+            {
+                gameManager.AddCurrentAmount(1); // Player has defeated an enemy, so add to the current amount to get closer to win condition
+            }
 
             Destroy(collision.gameObject);
             Destroy(this.gameObject);
