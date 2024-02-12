@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 57151142}
   - component: {fileID: 57151143}
   - component: {fileID: 57151144}
+  - component: {fileID: 57151145}
   m_Layer: 0
   m_Name: Player!
   m_TagString: Player
@@ -433,6 +434,18 @@ MonoBehaviour:
   scoreHolder: {fileID: 1937703730}
   upgradeOptionsCom: []
   revealedOptions: []
+--- !u!114 &57151145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57151138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20b03d92e4e736d42ab59aa88282b034, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &60124843
 PrefabInstance:
   m_ObjectHideFlags: 0
