@@ -13,12 +13,19 @@ public class PlayerMovement : MonoBehaviour
 
     //shooting
     public GameObject bulletPoint, bullet;
-    public float shootCD = 0, fireRate = 1;
+    public float shootCD, fireRate = 1, thrustCD, triShotCD, cdAmp = 1;
     public AudioSource fire;
     public float xLook, yLook;
     //altshooting
-    internal bool trishot = false;
+    internal bool trishot = false, fullThrust = false, canLook = true;
+    internal float tempSpeed;
     private float triAngle = 10f;
+
+    private float boostTime = 0;
+    public Vector3 boostDir;
+
+    public int health = 5;
+    public bool killImpact = false;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 lookPos = new Vector3(xLook, yLook);
         //Vector3 currPos = new Vector3(transform.position.x, transform.position.y); 
         //transform.LookAt(transform.position + lookPos); BAD this is awful.
-        if (xLook != 0 &&  yLook != 0)
+        if (xLook != 0 && yLook != 0 && canLook)
         {
             transform.up = lookPos;
         }
@@ -43,21 +50,41 @@ public class PlayerMovement : MonoBehaviour
 
         float xForce = mJoy.Horizontal;
         float yForce = mJoy.Vertical;
+        Vector3 moveVector = new Vector3(xForce, yForce);
 
-        Vector2 moveVector = new Vector2(xForce, yForce);
+
+        /*if (xForce != 0 && yForce != 0 && canLook)
+        {
+            transform.up = moveVector;
+
+        }*/
+        if (canLook)
+        {
+            rb.velocity = moveVector * moveForce * moveAmp;
+        }
+
         //rb.AddForce(moveVector);
         //I'll figure out a better way for moving later. It's kinda rigid at the moment. ha. rigid.
-        rb.velocity = moveVector * moveForce * moveAmp;
 
 
+        shootCD += Time.deltaTime * fireRate;
+        thrustCD += Time.deltaTime * cdAmp;
+        triShotCD += Time.deltaTime * cdAmp;
         //shoot bullets always
         Shoot();
+
+        if (fullThrust)
+        {
+            Thrusting(xLook, yLook);
+        }
+
     }
 
     public void Shoot()
     {
-        shootCD += Time.deltaTime * fireRate;
-        if (shootCD > 0.5f && xLook != 0 && yLook != 0)
+
+        if (shootCD > 1.0f && xLook != 0 && yLook != 0)
+        //if (shootCD > 1.0f)
         {
             Instantiate(bullet, bulletPoint.transform.position, bulletPoint.transform.rotation);
             shootCD = 0;
@@ -85,4 +112,77 @@ public class PlayerMovement : MonoBehaviour
         }
         
     }
+
+
+
+
+    public void DoTriShot()
+    {
+        if (triShotCD > 20.0f)
+        {
+            trishot = true;
+            Invoke("UndoTriShot", 5f);
+        }
+
+    }
+    private void UndoTriShot()
+    {
+        trishot = false;
+    }
+
+
+
+    public void DoFullThrust()
+    {
+        if (thrustCD > 20.0f)
+        {
+            fullThrust = true;
+            tempSpeed = moveForce;
+            //Invoke("UndoFullThrust", 5f);
+        }
+
+
+    }
+    private void UndoFullThrust()
+    {
+        fullThrust = false;
+    }
+
+    void Thrusting(float xF, float yF)
+    {
+        if (moveForce > 0f)
+        {
+            moveForce -= Time.deltaTime * 1.5f;
+            //you can set to play a charging sound here
+        }
+        else
+        {
+            moveForce = 0f;
+            if (boostTime <= 0.8f)
+            {
+                killImpact = true;
+                if (boostDir.x == 0 && boostDir.y == 0)
+                {
+                    boostDir = new Vector3(xF, yF);
+                }
+
+                canLook = false;
+                boostTime += Time.deltaTime;
+
+                rb.velocity = boostDir * 10;
+
+            }
+            else
+            {
+                UndoFullThrust();
+                moveForce = tempSpeed;
+                canLook = true;
+            }    
+
+        }
+
+    }
+
+
+
 }

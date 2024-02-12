@@ -8,8 +8,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [Header("Game Settings")]
-    private int AmountNeededToWinLvl1 = 5; // Amount needed to pass level 1
-    private int AmountNeededToWinLvl2 = 10; // Amount needed to pass level 2
+    private int AmountNeededToWinLvl1 = 15; // Amount needed to pass level 1
+    private int AmountNeededToWinLvl2 = 30; // Amount needed to pass level 2
 
     private int CurrentAmount; // Amount player has accumilated thus far in order to pass the win condition (Can be any value stat as long as its an int)
     private int CurrentLevel = 1; // Current Lvl player is in
