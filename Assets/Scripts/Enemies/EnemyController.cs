@@ -28,9 +28,8 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            Debug.Log("Player has been hit by Enemy Ship!");
+            collision.gameObject.GetComponent<HealthManager>().TakeDamage(5);
 
-            // Call function here to damage player health or something
             if (deathsound)
             {
                 deathsound.Play();
