@@ -28,13 +28,26 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<HealthManager>().TakeDamage(5);
+            PlayerMovement playerMovement = collision.gameObject.GetComponent<PlayerMovement>();
 
-            if (deathsound)
+            if (playerMovement.killImpact)
             {
-                deathsound.Play();
+                if (deathsound)
+                {
+                    deathsound.Play();
+                }
+                Destroy(this.gameObject);
             }
-            Destroy(this.gameObject);
+            else if (!playerMovement.killImpact)
+            {
+                collision.gameObject.GetComponent<HealthManager>().TakeDamage(5);
+                if (deathsound)
+                {
+                    deathsound.Play();
+                }
+                Destroy(this.gameObject);
+            }
+
         }
     }
 }

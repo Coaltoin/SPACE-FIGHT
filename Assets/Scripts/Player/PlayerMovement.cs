@@ -177,6 +177,7 @@ public class PlayerMovement : MonoBehaviour
                 UndoFullThrust();
                 moveForce = tempSpeed;
                 canLook = true;
+                killImpact = false;
             }    
 
         }
