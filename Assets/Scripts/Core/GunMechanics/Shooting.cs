@@ -8,50 +8,25 @@ public class Shooting : MonoBehaviour
     [Header("Shooting Settings")]
     public GameObject Bullet;
     public Transform FirePoint;
-    public float fireRate = 1;
     public AudioSource ShootSound;
     public float ShootCooldown;
-    private float Shoot_CT;
-    //private Button ShootButton;
 
-    [Header("Tri-Shot Settings")]
-    public Button TriShotButton;
-    public AudioSource TriShotSound;
-    private float TriShotCooldown = 5f;
-    private float TriShot_CT;
-    private float triAngle = 10f;
-
+    private float CurrentTime;
     private bool CanShoot = true;
-    private bool CanTriShot = true;
-    private bool TriShotActivated = false;
-
-    ButtonManager buttonManager;
+    private Button ShootButton;
 
     private void Start()
     {
-        // ShootButton = GameObject.Find("Shoot Button").GetComponent<Button>();
-        buttonManager = GameObject.Find("GameManager").GetComponent<ButtonManager>();
+       // ShootButton = GameObject.Find("Shoot Button").GetComponent<Button>();
     }
 
     private void Update()
     {
-        CooldownHandler();
-    }
-
-    void CooldownHandler()
-    {
-        // Shooting
-        Shoot_CT += Time.deltaTime * fireRate;
-        if (Shoot_CT >= ShootCooldown)
+        CurrentTime += Time.deltaTime;
+        if (CurrentTime >= ShootCooldown)
         {
             CanShoot = true;
-        }
-
-        // Tri-Shot
-        TriShot_CT += Time.deltaTime;
-        if (TriShot_CT >= TriShotCooldown)
-        {
-            CanTriShot = true;
+            //DisableShootButton(false);
         }
     }
 
@@ -59,66 +34,33 @@ public class Shooting : MonoBehaviour
     {
         if (CanShoot == true)
         {
+            //DisableShootButton(true);
             CanShoot = false;
-            Shoot_CT = 0;
+            CurrentTime = 0;
 
-            if (ShootSound && TriShotActivated == false)
+            if (ShootSound)
             {
                 ShootSound.PlayOneShot(ShootSound.clip);
-            } 
-            Instantiate(Bullet, FirePoint.position, FirePoint.transform.rotation);
-
-            if (TriShotActivated == true)
-            {
-                if (TriShotSound)
-                {
-                    TriShotSound.PlayOneShot(TriShotSound.clip);
-                }
-
-                float angle = FirePoint.transform.rotation.eulerAngles.z;
-                float leftAngle = angle + triAngle;
-                float rightAngle = angle - triAngle;
-
-                //shoot the left side
-                Quaternion leftRotation = Quaternion.Euler(0f, 0f, leftAngle);
-                Instantiate(Bullet, FirePoint.transform.position, leftRotation);
-
-                //shoot the right side
-                Quaternion rightRotation = Quaternion.Euler(0f, 0f, rightAngle);
-                Instantiate(Bullet, FirePoint.transform.position, rightRotation);
-
             }
+            Instantiate(Bullet, FirePoint.position, Quaternion.identity);
         }
     }
 
-    public void TriShot()
+    /*
+     
+    private void DisableShootButton(bool Status)
     {
-        if (CanTriShot)
+        if (Status == true)
         {
-            Debug.Log("TriShot Activated");
-            TriShotActivated = true;
-            CanTriShot = false;
-            TriShot_CT = 0;
-            if (buttonManager)
+            if (ShootButton != null)
             {
-                buttonManager.DisableButton(true, TriShotButton);
+                ShootButton.enabled = false;
             }
-            Invoke("UndoTriShot", TriShotCooldown);
-        }
-    }
-    private void UndoTriShot()
-    {
-        Debug.Log("TriShot DeActivated");
-        TriShotActivated = false;
-        CanTriShot = false;
-        TriShot_CT = 2; // 3 second extra cd (Total 5 second wait)
-        if (buttonManager)
+        } else
         {
-            buttonManager.DisableButton(false, TriShotButton);
+            ShootButton.enabled = true;
         }
     }
-
-   
-    
+    */
 }
 

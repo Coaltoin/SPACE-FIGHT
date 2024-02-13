@@ -7,8 +7,7 @@ public class MainMenu : MonoBehaviour
 {
    public void StartButton()
    {
-        SceneManager.LoadScene("Level 1");
-        Time.timeScale = 1;
+        SceneManager.LoadScene(1);
    }
 
     public void QuitButton()

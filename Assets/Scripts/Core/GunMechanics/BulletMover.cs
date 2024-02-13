@@ -38,7 +38,9 @@ public class BulletMover : MonoBehaviour
     {
       //  print(collision.gameObject.name);
 
-        if (collision.gameObject.tag == "Enemy") 
+
+
+        if (collision.gameObject.tag == "Enemy") //IMPORTANT FOR FUTURE: Make it so enemies have health, and shooting them removes health. They destroy themselves once they reach 0.
         {
             //creates stuff where the enemy dies
             Instantiate(scrapToSpawn, collision.gameObject.transform.position, Quaternion.identity);
@@ -57,7 +59,5 @@ public class BulletMover : MonoBehaviour
 
         }
     }
-
-   
 
 }

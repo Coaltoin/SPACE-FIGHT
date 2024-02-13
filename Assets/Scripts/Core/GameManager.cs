@@ -9,8 +9,8 @@ using UnityEngine.Audio;
 public class GameManager : MonoBehaviour
 {
     [Header("Game Settings")]
-    private int AmountNeededToWinLvl1 = 80; // Amount needed to pass level 1
-    private int AmountNeededToWinLvl2 = 120; // Amount needed to pass level 2
+    private int AmountNeededToWinLvl1 = 5; // Amount needed to pass level 1
+    private int AmountNeededToWinLvl2 = 10; // Amount needed to pass level 2
 
     private int CurrentAmount; // Amount player has accumilated thus far in order to pass the win condition (Can be any value stat as long as its an int)
     private int CurrentLevel = 1; // Current Lvl player is in
@@ -21,43 +21,30 @@ public class GameManager : MonoBehaviour
     public AudioSource WinSound;
     public GameObject LoseScreen;
     public AudioSource LoseSound;
-    public GameObject ReplayMenu;
-    public GameObject HUDMenu;
-    public GameObject ControlsMenu;
-    public TextMeshProUGUI InvaderKillsUI;
 
     private GameObject Player;
-<<<<<<< HEAD
     AudioManager audioManager;
 
     private void Awake()
     {
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
-=======
-    private float FinalScore;
->>>>>>> PolishSpaceFight_Day2
 
     private void Start()
     {
         CurrentAmount = 0;
 
         Player = GameObject.Find("Player!");
-        
 
         if (SceneManager.GetActiveScene().name == "Level 1")
         {
             PlayerPrefs.SetInt("CurrentLevel", 1);
             CurrentLevel = 1;
-            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl1;
-            Player.GetComponent<CollectUpgrade>().score = 0;
-            PlayerPrefs.SetFloat("Score", 0);
             Debug.Log("Player is in Level 1");
         } else if (SceneManager.GetActiveScene().name == "Level 2")
         {
             RecordPlayerPosition(true);
-            CurrentLevel = 2;
-            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl2;
+            CurrentLevel = PlayerPrefs.GetInt("CurrentLevel");
 
             Debug.Log("Loaded Previous Data.");
 
@@ -115,8 +102,7 @@ public class GameManager : MonoBehaviour
             if (CurrentAmount >= AmountNeededToWinLvl1)
             {
                 CurrentLevel += 1;
-                FinalScore = Player.GetComponent<CollectUpgrade>().score;
-                PlayerPrefs.SetFloat("Score", FinalScore);
+
                 PlayerPrefs.SetInt("CurrentLevel", CurrentLevel);
                 RecordPlayerPosition(false);
                 SceneManager.LoadScene("Level " + CurrentLevel);
@@ -138,15 +124,12 @@ public class GameManager : MonoBehaviour
     public void AddCurrentAmount(int Amount)
     {
         CurrentAmount += Amount;
-       
 
         if (CurrentLevel == 1)
         {
-            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl1;
             Debug.Log("Player has increased Current Amount to " + CurrentAmount + ". Win Condition is " + AmountNeededToWinLvl1);
         } else if (CurrentLevel == 2)
         {
-            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl2;
             Debug.Log("Player has increased Current Amount to " + CurrentAmount + ". Win Condition is " + AmountNeededToWinLvl2);
         }
 
@@ -162,15 +145,6 @@ public class GameManager : MonoBehaviour
         return CurrentAmount;
     }
 
-    public int GetAmountNeededToWin_Lvl_1()
-    {
-        return AmountNeededToWinLvl1;
-    }
-    public int GetAmountNeededToWin_Lvl_2()
-    {
-        return AmountNeededToWinLvl2;
-    }
-
     /// <summary>
     /// Did the player beat the game pass true if did false if didn't will display win/lose screen and stop the game
     /// </summary>
@@ -179,10 +153,6 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0;
         GameObject.Find("BackgroundMusic").GetComponent<AudioSource>().Stop();
-
-        ReplayMenu.SetActive(true);
-        ControlsMenu.SetActive(false);
-        HUDMenu.SetActive(false);
 
         if (Status == true)
         {
@@ -202,7 +172,6 @@ public class GameManager : MonoBehaviour
             Debug.Log("Player has won!");
         } else
         {     
-            Player.SetActive(false);
             if (LoseSound)
             {
                 LoseSound.Play();
@@ -210,7 +179,7 @@ public class GameManager : MonoBehaviour
 
             if (LoseScreen)
             {
-                LoseScreen.SetActive(true);
+                LoseScreen.SetActive(false);
             }
             if (WinScreen)
             {
