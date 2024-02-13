@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CollectUpgrade : MonoBehaviour
 {
@@ -17,13 +18,21 @@ public class CollectUpgrade : MonoBehaviour
     [Header("Upgrades")]
     public List<GameObject> upgradeOptionsCom = new List<GameObject>();
     public List<GameObject> revealedOptions = new List<GameObject>();
-    
+
+    private Shooting shooting;
 
     // Start is called before the first frame update
     void Start()
     {
-
-        playerMovement = GetComponent<PlayerMovement>();
+        if (SceneManager.GetActiveScene().name == "Level 1")
+        {
+            score = 0;
+        } else if (SceneManager.GetActiveScene().name == "Level 2")
+        {
+            score = PlayerPrefs.GetFloat("Score");
+        }
+            playerMovement = GetComponent<PlayerMovement>();
+        shooting = GameObject.Find("GameManager").GetComponent<Shooting>();
         Object[] upgradeLoaded = Resources.LoadAll("Upgrades", typeof(GameObject));
 
         foreach (GameObject prefab in upgradeLoaded)
@@ -37,11 +46,12 @@ public class CollectUpgrade : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        scoreHolder.GetComponent<TMPro.TextMeshProUGUI>().text = "Score : " + score;
 
         //testing
         if (Input.GetKeyDown(KeyCode.V))
         {
-            Upgrade();
+          //  Upgrade();
         }
     }
 
@@ -59,7 +69,7 @@ public class CollectUpgrade : MonoBehaviour
         }
     }
     
-
+   
 
     public void CheckUpgrade()
     {
@@ -187,7 +197,7 @@ public class CollectUpgrade : MonoBehaviour
 
     public void Firerate()
     {
-        playerMovement.fireRate += .1f;
+        shooting.fireRate += .1f;
     }
     public void AbilityCD()
     {
