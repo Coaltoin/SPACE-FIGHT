@@ -28,7 +28,7 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
-    void Stop() 
+    public void Stop() 
     {
         PauseMenuCanvas.SetActive(true);
         Time.timeScale = 0f;
@@ -44,7 +44,7 @@ public class PauseMenu : MonoBehaviour
 
     public void MainMenuButton() 
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        SceneManager.LoadScene(0);
     }
 
 }

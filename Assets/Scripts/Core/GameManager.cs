@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,6 +23,12 @@ public class GameManager : MonoBehaviour
     public AudioSource LoseSound;
 
     private GameObject Player;
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
 
     private void Start()
     {
