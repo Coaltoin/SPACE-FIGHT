@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public GameObject ReplayMenu;
     public GameObject HUDMenu;
     public GameObject ControlsMenu;
+    public TextMeshProUGUI InvaderKillsUI;
 
     private GameObject Player;
     private float FinalScore;
@@ -38,12 +39,15 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("CurrentLevel", 1);
             CurrentLevel = 1;
+            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl1;
             Player.GetComponent<CollectUpgrade>().score = 0;
+            PlayerPrefs.SetFloat("Score", 0);
             Debug.Log("Player is in Level 1");
         } else if (SceneManager.GetActiveScene().name == "Level 2")
         {
             RecordPlayerPosition(true);
             CurrentLevel = 2;
+            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl2;
 
             Debug.Log("Loaded Previous Data.");
 
@@ -124,12 +128,15 @@ public class GameManager : MonoBehaviour
     public void AddCurrentAmount(int Amount)
     {
         CurrentAmount += Amount;
+       
 
         if (CurrentLevel == 1)
         {
+            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl1;
             Debug.Log("Player has increased Current Amount to " + CurrentAmount + ". Win Condition is " + AmountNeededToWinLvl1);
         } else if (CurrentLevel == 2)
         {
+            InvaderKillsUI.text = "Invaders: " + CurrentAmount + " / " + AmountNeededToWinLvl2;
             Debug.Log("Player has increased Current Amount to " + CurrentAmount + ". Win Condition is " + AmountNeededToWinLvl2);
         }
 

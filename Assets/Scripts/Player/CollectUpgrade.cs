@@ -21,6 +21,9 @@ public class CollectUpgrade : MonoBehaviour
 
     private Shooting shooting;
 
+    public AudioSource UpgradeUnlocked;
+    public AudioSource UpgradeSelected;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -78,6 +81,8 @@ public class CollectUpgrade : MonoBehaviour
             upgradeProg = 0;
             scrapNeedToUpgrade = Mathf.Round(scrapNeedToUpgrade * 1.7f);
             Upgrade();
+
+            UpgradeUnlocked.Play();
         }
     }
 
@@ -172,6 +177,8 @@ public class CollectUpgrade : MonoBehaviour
         {
             Destroy(option);
         }
+
+        UpgradeSelected.Play();
         revealedOptions.Clear();
         uiBlocker.SetActive(false);
         Time.timeScale = 1f;

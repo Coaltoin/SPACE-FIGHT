@@ -21,6 +21,10 @@ public class PlayerMovement : MonoBehaviour
     private float boostTime = 0;
     public Vector3 boostDir;
     public bool killImpact = false;
+    public AudioSource FullThrustCharge;
+    public AudioSource FullThrustBoost;
+    bool ChargeSoundPlayedOnce = false;
+    bool BoostSoundPlayedOnce = false;
 
     
     private Shooting shooting;
@@ -98,7 +102,9 @@ public class PlayerMovement : MonoBehaviour
     }
     private void UndoFullThrust()
     {
-        fullThrust = false;  
+        fullThrust = false;
+        BoostSoundPlayedOnce = false;
+        ChargeSoundPlayedOnce = false;
     }
 
     private void UndoThrustButton()
@@ -117,6 +123,12 @@ public class PlayerMovement : MonoBehaviour
             boostTime = 0;
             boosting = false;
             killImpact = true; // immune to death while charging
+
+            if (ChargeSoundPlayedOnce == false)
+            {
+                ChargeSoundPlayedOnce = true;
+                FullThrustCharge.Play();
+            }
         }
         else
         {
@@ -128,6 +140,12 @@ public class PlayerMovement : MonoBehaviour
                 if (boostDir.x == 0 && boostDir.y == 0)
                 {
                     boostDir = new Vector3(xF, yF);
+                }
+
+                if (BoostSoundPlayedOnce == false)
+                {
+                    BoostSoundPlayedOnce = true;
+                    FullThrustBoost.Play();
                 }
 
                 canLook = false;
