@@ -11,26 +11,27 @@ public class SoundSettings : MonoBehaviour
     
     private void Start() 
     {
-        SetVolume(PlayerPrefs.GetFloat("SavedMasterVolume", 100));
-       // SetVolume(60f);
+       // SetVolume(PlayerPrefs.GetFloat("SavedMasterVolume", 100));
+        SetVolume(60f);
     }
 
     public void SetVolume(float _value) 
     {
-       // AudioListener.volume = soundSlider.value / 30;
+        
+        AudioListener.volume = soundSlider.value / 30;
 
-      
+      /*
         if (_value < 1) 
         {
             _value = .001f;
         }
 
-        Debug.Log(_value);
+       // Debug.Log(_value);
 
         RefreshSlider(_value);
         PlayerPrefs.SetFloat("SavedMasterVolume", _value);
         masterMixer.SetFloat("MasterVolume", Mathf.Log10(_value / 100) * 20f);
-        
+        */
     }
    
     public void SetVolumeFromSlider() 
