@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CollectUpgrade : MonoBehaviour
 {
@@ -12,18 +13,29 @@ public class CollectUpgrade : MonoBehaviour
 
 
     public PlayerMovement playerMovement;
-    public GameObject canvas, uiBlocker, scoreHolder;
+    public GameObject canvas, uiBlocker, scoreHolder, fullThrustButton, triShotButton;
 
     [Header("Upgrades")]
     public List<GameObject> upgradeOptionsCom = new List<GameObject>();
     public List<GameObject> revealedOptions = new List<GameObject>();
-    
+
+    private Shooting shooting;
+
+    public AudioSource UpgradeUnlocked;
+    public AudioSource UpgradeSelected;
 
     // Start is called before the first frame update
     void Start()
     {
-
-        playerMovement = GetComponent<PlayerMovement>();
+        if (SceneManager.GetActiveScene().name == "Level 1")
+        {
+            score = 0;
+        } else if (SceneManager.GetActiveScene().name == "Level 2")
+        {
+            score = PlayerPrefs.GetFloat("Score");
+        }
+            playerMovement = GetComponent<PlayerMovement>();
+        shooting = GameObject.Find("GameManager").GetComponent<Shooting>();
         Object[] upgradeLoaded = Resources.LoadAll("Upgrades", typeof(GameObject));
 
         foreach (GameObject prefab in upgradeLoaded)
@@ -37,11 +49,12 @@ public class CollectUpgrade : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        scoreHolder.GetComponent<TMPro.TextMeshProUGUI>().text = "Score : " + score;
 
         //testing
         if (Input.GetKeyDown(KeyCode.V))
         {
-            Upgrade();
+          //  Upgrade();
         }
     }
 
@@ -59,7 +72,7 @@ public class CollectUpgrade : MonoBehaviour
         }
     }
     
-
+   
 
     public void CheckUpgrade()
     {
@@ -68,6 +81,8 @@ public class CollectUpgrade : MonoBehaviour
             upgradeProg = 0;
             scrapNeedToUpgrade = Mathf.Round(scrapNeedToUpgrade * 1.7f);
             Upgrade();
+
+            UpgradeUnlocked.Play();
         }
     }
 
@@ -82,6 +97,15 @@ public class CollectUpgrade : MonoBehaviour
         int upgrade1 = Random.Range(0, upgradeOptionsCom.Count);
         int upgrade2 = Random.Range(0, upgradeOptionsCom.Count);
         int upgrade3 = Random.Range(0, upgradeOptionsCom.Count);
+
+        while (upgrade2 == upgrade1)
+        {
+            upgrade2 = Random.Range(0, upgradeOptionsCom.Count);
+        }
+        while (upgrade3 == upgrade1 || upgrade3 == upgrade2)
+        {
+            upgrade3 = Random.Range(0, upgradeOptionsCom.Count);
+        }
 
         GameObject option1 = upgradeOptionsCom[upgrade1];
         GameObject option2 = upgradeOptionsCom[upgrade2];
@@ -123,7 +147,7 @@ public class CollectUpgrade : MonoBehaviour
         switch (spawnedUI.name)
         {
             case "Full Thrust!(Clone)":
-                Debug.Log("Thrusting makes.");
+                button.onClick.AddListener(FullThrust);
                 break;
             case "Speed(Clone)":
                 button.onClick.AddListener(Speed); 
@@ -133,6 +157,9 @@ public class CollectUpgrade : MonoBehaviour
                 break;
             case "Firerate(Clone)":
                 button.onClick.AddListener(Firerate);
+                break;
+            case "Ability Cooldown(Clone)":
+                button.onClick.AddListener(AbilityCD);
                 break;
             
         }    
@@ -150,6 +177,8 @@ public class CollectUpgrade : MonoBehaviour
         {
             Destroy(option);
         }
+
+        UpgradeSelected.Play();
         revealedOptions.Clear();
         uiBlocker.SetActive(false);
         Time.timeScale = 1f;
@@ -157,10 +186,15 @@ public class CollectUpgrade : MonoBehaviour
     //UPGRADE FUNCTIONS
     public void TriShotUpgrade()
     {
-        //change this to set active a button that activates trishot.
-        Debug.Log("Activing TriShot");
-        playerMovement.trishot = true;
+        triShotButton.SetActive(true);
 
+        for (int i = 0; i < upgradeOptionsCom.Count; i++) 
+        {
+            if (upgradeOptionsCom[i].gameObject.name == "TriShot")
+            {
+                upgradeOptionsCom.RemoveAt(i);
+            }
+        }
     }
     public void Speed()
     {
@@ -170,7 +204,25 @@ public class CollectUpgrade : MonoBehaviour
 
     public void Firerate()
     {
-        playerMovement.fireRate += .1f;
+        shooting.fireRate += .1f;
+    }
+    public void AbilityCD()
+    {
+        playerMovement.cdAmp += .15f;
+    }
+
+    public void FullThrust()
+    {
+        fullThrustButton.SetActive(true);
+
+        for (int i = 0; i < upgradeOptionsCom.Count; i++)
+        {
+            if (upgradeOptionsCom[i].gameObject.name == "Full Thrust!")
+            {
+                upgradeOptionsCom.RemoveAt(i);
+            }
+        }
+
     }
 
 }

@@ -8,9 +8,10 @@ public class EnemyController : MonoBehaviour
 
     public float moveSpeed = 2f;
     private Transform player;
-    public AudioSource deathsound;
+    private AudioSource deathsound;
     void Start()
     {
+        deathsound = GameObject.Find("PlayerHit").GetComponent<AudioSource>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
@@ -28,13 +29,29 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<HealthManager>().TakeDamage(5);
+            PlayerMovement playerMovement = collision.gameObject.GetComponent<PlayerMovement>();
 
-            if (deathsound)
+            if (playerMovement.killImpact)
             {
-                deathsound.Play();
+                /*
+                 
+                if (deathsound)
+                {
+                    deathsound.PlayOneShot(deathsound.clip);
+                }
+                Destroy(this.gameObject);
+                */
             }
-            Destroy(this.gameObject);
+            else if (!playerMovement.killImpact)
+            {
+                collision.gameObject.GetComponent<HealthManager>().TakeDamage(5);
+                if (deathsound)
+                {
+                    deathsound.PlayOneShot(deathsound.clip);
+                }
+                Destroy(this.gameObject);
+            }
+
         }
     }
 }
