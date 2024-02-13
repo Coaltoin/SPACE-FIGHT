@@ -40,7 +40,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Stop() 
     {
-       // GameObject.Find("BackgroundMusic").GetComponent<AudioSource>().Pause();
+        GameObject.Find("BackgroundMusic").GetComponent<AudioSource>().Pause();
         PauseSound.Play();
         //OptionSelectedSound.Play();
         PauseMenuCanvas.SetActive(true);
@@ -51,7 +51,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Play() 
     {
-    //   GameObject.Find("BackgroundMusic").GetComponent<AudioSource>().Play();
+       GameObject.Find("BackgroundMusic").GetComponent<AudioSource>().Play();
         UnPauseSound.Play();
        // OptionSelectedSound.Play();
         PauseButton.SetActive(true);
